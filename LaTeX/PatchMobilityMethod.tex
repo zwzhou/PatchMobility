@@ -1,0 +1,711 @@
+\documentclass[a4paper,UTF8]{ctexart}
+\usepackage[margin=1in]{geometry}
+%\pagestyle{empty}
+%\pagenumbering{}
+\usepackage{array,bm}
+\usepackage[uppi]{varint}
+%\usepackage{tabularx,makecell,booktabs}
+\usepackage{amsmath,amssymb,latexsym,marvosym,mathtools,textcomp}
+%\usepackage{helvet}
+%\setmainfont[Mapping=tex-text]{Helvetica}
+%\setCJKmainfont{WenQuanYi Micro Hei}
+%\setmainfont[Mapping=tex-text]{Arial}
+
+\usepackage[
+bookmarks=true,bookmarksnumbered=true,bookmarksopen=false,
+breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=true]
+{hyperref}
+\CTEXoptions[today=old]
+\title{Patch Mobility Method}
+\author{Zhou Zhenwei}
+\date{\today}
+
+\begin{document}
+	\maketitle
+	\thispagestyle{empty}
+	
+	\section{Patch Mobility Definition}
+	Patch-Mobility method is defined by:
+	\begin{equation}
+	\label{eq:PatchMobilityDefinition}
+	Y_{R-I} = \frac{\langle V\rangle_R}{\langle F\rangle_I}
+	\end{equation}
+	where:
+	\begin{equation}
+	\label{eq:PatchMeanVelocity}
+	\langle V\rangle_R = \frac{\iint_{S_R}V\left(x,y\right)\,\mathrm{d}S}{S_R}
+	\end{equation}
+	and:
+	\begin{equation}
+	\label{eq:PatchMeanForce}
+	\langle F\rangle_I 
+	= \frac{\iint_{S_I}F\left(x,y\right)\,\mathrm{d}S}{S_I} 
+	= \iint_{S_I}P\left(x,y\right)\,\mathrm{d}S 
+	= \langle P\rangle_IS_I
+	\end{equation}
+	The subscript $I$ indicates Incident, and $R$ indicates Response.
+	
+	
+	\section{Panel Patch Mobility}
+	
+	\subsection{General Function Solution}
+	Panel equation:
+	\begin{equation}
+	\label{eq:panelequ}
+	D\nabla^4w\left(x,y\right)-\omega^2\rho hw\left(x,y\right)
+	= P\left(x,y\right)
+	\end{equation}
+	panel displacement modal expansion:
+	\begin{equation}
+	\label{eq:panelModalExp}
+	w\left(x,y\right)
+	= \sum_{n=1}^{\infty}W_n\psi_n\left(x,y\right)
+	\end{equation}
+	substitute Eq.~(\ref{eq:panelModalExp}) into Eq.~(\ref{eq:panelequ}):
+	\begin{equation}
+	\label{eq:panelEquExp}
+	D\nabla^4\sum_{n=1}^{\infty}W_n\psi_n\left(x,y\right) 
+	- \omega^2\rho h\sum_{n=1}^{\infty}W_n\psi_n\left(x,y\right)
+	= P\left(x,y\right)
+	\end{equation}
+	Eq.~(\ref{eq:panelEquExp})'s characteristic equation:
+	\begin{equation}
+	\label{eq:panelequCharacteristicEqu}
+	D\nabla^4W_n\psi_n\left(x,y\right)
+	- \omega_n^2\rho hW_n\psi_n\left(x,y\right)
+	= 0
+	\end{equation}
+	We can obtain:
+	\begin{equation}
+	\label{eq:panelEquAsm}
+	\rho h\sum_{n=1}^{\infty}\omega_n^2W_n\psi_n\left(x,y\right)
+	- \omega^2\rho h\sum_{n=1}^{\infty}W_n\psi_n\left(x,y\right)
+	= P\left(x,y\right)
+	\end{equation}
+	Use modal orthogonality decouple Eq.~(\ref{eq:panelEquAsm}), times panel modal $\psi_m\left(x,y\right),m=1,2,...$ on both side and then integral, obtain:
+	\begin{equation}
+	\label{eq:panelEquDecoupled}
+	\rho h\omega_m^2W_m\iint_S\psi_m^2\left(x,y\right)\,\mathrm dS
+	- \omega^2\rho hW_m\iint_S\psi_m\left(x,y\right)\,\mathrm dS
+	= \iint_SP\left(x,y\right)\psi_m\left(x,y\right)\,\mathrm dS
+	\end{equation}
+	Solve Eq.~(\ref{eq:panelEquDecoupled}):
+	\begin{equation}
+	\label{eq:panelEquModalAns}
+	W_m
+	= \frac{\iint_SP\left(x,y\right)\psi_m\left(x,y\right)\,\mathrm dS}
+	{\rho h\left(\omega_m^2-\omega^2\right)
+		\iint_S\psi_m^2\left(x,y\right)\,\mathrm dS}
+	\end{equation}
+	Where $P\left(x,y\right)$ the mean pressure on the incident Patch:
+	\begin{equation}
+	P\left(x,y\right)
+	= \begin{cases}
+		\langle P\rangle_i\ ,&\left(x,y\right)\in S_i\\
+		\ 0\  ,&\mathrm{other}
+	\end{cases}
+	\end{equation}
+	Put it into Eq.~(\ref{eq:panelEquModalAns}):
+	\begin{equation}
+	\label{eq:panelEquModalAnsP}
+	W_m
+	= \frac{\langle P\rangle_i\iint_{S_i}\psi_m\left(x,y\right)\,\mathrm dS}
+	{\rho h\left(\omega_m^2-\omega^2\right)
+		\iint_S\psi_m^2\left(x,y\right)\,\mathrm dS}
+	\end{equation}
+	Substitute Eq.~(\ref{eq:panelEquModalAnsP}) into Eq.~(\ref{eq:panelModalExp}):
+	\begin{equation}
+	\label{eq:panelEquDispAns}
+	\begin{split}
+	w\left(x,y\right) 
+	&=\langle P\rangle_i\sum_{n=1}^{\infty}
+	\frac{\iint_{S_i}\psi_n\left(x,y\right)\,\mathrm dS}
+	{\rho h\left(\omega_n^2-\omega^2\right)
+		\iint_S\psi_n^2\left(x,y\right)\,\mathrm dS}
+	\psi_n\left(x,y\right)\\
+	&=\frac{\langle F\rangle_i}{S_i} \sum_{n=1}^{\infty}
+	\frac{\iint_{S_i}\psi_n\left(x,y\right)\,\mathrm dS}
+	{\rho h\left(\omega_n^2-\omega^2\right)
+		\iint_S\psi_n^2\left(x,y\right)\,\mathrm dS}
+	\psi_n\left(x,y\right)
+	\end{split}
+	\end{equation}
+	Velocity:
+	\begin{equation}
+	\label{eq:panelEquVelocityAns}
+	v\left(x,y\right)
+	= \mathrm i\omega w\left(x,y\right)
+	= \mathrm i\omega \frac{\langle F\rangle_i}{S_i} \sum_{n=1}^{\infty}
+	\frac{\iint_{S_i}\psi_n\left(x,y\right)\,\mathrm dS}
+	{\rho h \left(\omega_n^2 - \omega^2\right)
+		\iint_S\psi_n^2\left(x,y\right)\,\mathrm dS}
+	\psi_n\left(x,y\right)
+	\end{equation}
+	Patch mean velocity:
+	\begin{equation}
+	\label{eq:panelPatchMeanVelocity}
+	\langle V\rangle_j
+	= \frac{\iint_{S_j}v\left(x,y\right)\,\mathrm dS} {S_j}
+	= i\omega \frac{\langle F\rangle_i}{S_iS_j} \sum_{n=1}^{\infty}
+	\frac{\iint_{S_i}\psi_n\left(x,y\right)\,\mathrm dS}
+	{\rho h \left(\omega_n^2-\omega^2\right)
+		\iint_S\psi_n^2\left(x,y\right)\,\mathrm dS}
+	\iint_{S_j}\psi_n\left(x,y\right)\,\mathrm dS
+	\end{equation}
+	Panel patch-mobility:
+	\begin{equation}
+	\label{eq:panelPatchMobility}
+	YP_{ij}
+	= \frac{\langle V\rangle_j}{\langle F\rangle_i}
+	= \frac{\mathrm i\omega}{S_iS_j} \sum_{n=1}^{\infty}
+	\frac{\iint_{S_i}\psi_n\left(x,y\right) \,\mathrm dS}
+	{\rho h \left(\omega_n^2-\omega^2\right)
+		\iint_S\psi_n^2\left(x,y\right)\,\mathrm dS}
+	\iint_{S_j}\psi_n\left(x,y\right)\,\mathrm dS
+	\end{equation}
+	
+	\subsection{Simply Support Boundary Solution}
+	For simply support boundary:
+	\begin{equation}
+	\label{eq:panelSimplySupportModal}
+	\psi_n\left(x,y\right)
+	= \sin\left(\frac{p\pi}{L_x}x\right) \sin\left(\frac{q\pi}{L_y}y\right)
+	\end{equation}
+	then
+	\begin{gather}
+	\label{eq:integralPanelModalOnPatch_i}
+	\begin{split}
+	\iint_{S_i}&\psi_n\left(x,y\right)\,\mathrm dS\\
+	&= \int_{S_{ix1}}^{S_{ix2}}\sin\left(\frac{p\pi}{L_x}x\right)\,\mathrm dx 
+	   \int_{S_{iy1}}^{S_{iy2}}\sin\left(\frac{q\pi}{L_y}y\right)\,\mathrm dy\\
+	&= \left[\left. -\frac{L_x}{p\pi} \cos\left(\frac{p\pi}{L_x}x\right) 
+		\right\rvert_{S_{ix1}}^{S_{ix2}} \right] 
+	   \left[\left. -\frac{L_y}{q\pi} \cos\left(\frac{q\pi}{L_y}y\right)
+	    \right\rvert_{S_{iy1}}^{S_{iy2}} \right]\\
+	&= \frac{L_xL_y}{pq\pi^2} 
+	\left[\cos\left(\frac{p\pi}{L_x}S_{ix2}\right)
+		- \cos\left(\frac{p\pi}{L_x}S_{ix1}\right) \right]
+	\left[\cos\left(\frac{q\pi}{L_y}S_{iy2}\right)
+		- \cos\left(\frac{q\pi}{L_y}S_{iy1}\right) \right]
+	\end{split}\\
+	\intertext{apply the same process:}
+	\label{eq:integralPanelModalOnPatch_j}
+	\begin{split}
+	\iint_{S_j}&\psi_n\left(x,y\right)\,\mathrm dS\\
+	&= \frac{L_xL_y}{pq\pi^2}
+	\left[\cos\left(\frac{p\pi}{L_x}S_{jx2}\right)
+		- \cos\left(\frac{p\pi}{L_x}S_{jx1}\right) \right]
+	\left[\cos\left(\frac{q\pi}{L_y}S_{jy2}\right)
+		- \cos\left(\frac{q\pi}{L_y}S_{jy1}\right) \right]
+	\end{split}\\
+	\intertext{and:}
+	\label{eq:integralPanelModalSqua}
+	\iint_S\psi_n^2\left(x,y\right)\,\mathrm ds
+	= \int_{0}^{L_x}\sin^2\left(\frac{p\pi}{L_x}x\right)\,\mathrm dx
+	  \int_{0}^{L_y}\sin^2\left(\frac{q\pi}{L_y}y\right)\,\mathrm dy
+	= \frac 14L_xL_y
+	\end{gather}
+	Substitute Eq.~(\ref{eq:panelSimplySupportModal}), (\ref{eq:integralPanelModalOnPatch_i}), (\ref{eq:integralPanelModalOnPatch_j}) and (\ref{eq:integralPanelModalSqua}) into Eq.~(\ref{eq:panelPatchMobility}):
+	\begin{equation}
+	\label{eq:SimplySupportPanelPatchMobility}
+	\begin{split}
+	YP_{ij}
+	&= \frac{\mathrm i\omega}{S_iS_j}\sum_{n=1}^{\infty}
+	\frac{ \dfrac{L_xL_y}{pq\pi^2}
+		\left[\cos\left(\dfrac{p\pi}{L_x}S_{ix2}\right)
+			- \cos\left(\dfrac{p\pi}{L_x}S_{ix1}\right) \right]
+		\left[\cos\left(\dfrac{q\pi}{L_y}S_{iy2}\right)
+			- \cos\left(\dfrac{q\pi}{L_y}S_{iy1}\right) \right] }
+	{\dfrac 14 \rho h \left(\omega_n^2-\omega^2\right) L_xL_y}\\
+	&\phantom{====}\ast \frac{L_xL_y}{pq\pi^2}
+	\left[\cos\left(\frac{p\pi}{L_x}S_{jx2}\right)
+		- \cos\left(\frac{p\pi}{L_x}S_{jx1}\right) \right]
+	\left[\cos\left(\frac{q\pi}{L_y}S_{jy2}\right)
+		- \cos\left(\frac{q\pi}{L_y}S_{jy1}\right) \right]\\
+	&= \frac{4i\omega L_xL_y}{\rho h\pi^4S_iS_j} \sum_{n=1}^{\infty}
+	\frac{
+		\left[\cos\left(\dfrac{p\pi}{L_x}S_{ix2}\right)
+			- \cos\left(\dfrac{p\pi}{L_x}S_{ix1}\right) \right]
+		\left[\cos\left(\dfrac{q\pi}{L_y}S_{iy2}\right)
+			- \cos\left(\dfrac{q\pi}{L_y}S_{iy1}\right) \right] }
+	{ \vphantom{\dfrac 14} pq\left(\omega_n^2 - \omega^2\right) }\\
+	&\phantom{====}\ast \frac{1}{pq}
+	\left[\cos\left(\frac{p\pi}{L_x}S_{jx2}\right)
+		- \cos\left(\frac{p\pi}{L_x}S_{jx1}\right) \right]
+	\left[\cos\left(\frac{q\pi}{L_y}S_{jy2}\right)
+		- \cos\left(\frac{q\pi}{L_y}S_{jy1}\right) \right]
+	\end{split}
+	\end{equation}
+	where:
+	\begin{equation}
+	\label{eq:panelModalFreq}
+	\omega_n^2
+	= \frac{D^\ast}{\rho h}
+	\left[ \left(\frac{p\pi}{L_x}\right)^2 
+		+  \left(\frac{q\pi}{L_y}\right)^2 \right]^2
+	\end{equation}
+	
+	
+	\subsection{Numerical Calculation}
+	Use accumulation instead integral in Eq.~(\ref{eq:panelPatchMobility}):
+	\begin{equation}
+	\label{eq:panelPatchMobility_Numerical}
+	\begin{split}
+	YP_{ij}
+	&= \frac{\mathrm i\omega}{S_iS_j} \sum_{n=1}^{\infty}
+	\frac{\iint_{S_i}\psi_n\left(x,y\right) \,\mathrm dS}
+	{\rho h \left(\omega_n^2-\omega^2\right)
+		\iint_S\psi_n^2\left(x,y\right)\,\mathrm dS}
+	\iint_{S_j}\psi_n\left(x,y\right)\,\mathrm dS \\
+	&= \frac{\mathrm i\omega}{S_iS_j} \sum_{n=1}^{\infty} \frac{{S_i}\psi_n\left(x_i,y_i\right) }
+	{\rho h \left(\omega_n^2-\omega^2\right)
+		\sum_{k=1}^{patchNum} S_k \psi_n^2\left(x_k,y_k\right)}
+	{S_j} \psi_n\left(x_j,y_j\right) \\
+	&= {\mathrm i\omega} \sum_{n=1}^{\infty} \frac{\psi_n\left(x_i,y_i\right) }
+	{\rho h \left(\omega_n^2-\omega^2\right)
+		\sum_{k=1}^{patchNum} S_k \psi_n^2\left(x_k,y_k\right)}
+	\psi_n\left(x_j,y_j\right)
+	\end{split}
+	\end{equation}
+	
+	
+	
+	\section{Cavity Patch Mobility}
+	
+	\subsection{General Function Solution}
+	Wave equation:
+	\begin{equation}
+	\label{eq:cavityWaveEquation}
+	\nabla^2p\left(x,y,z\right)+k^2p\left(x,y,z\right)
+	= -2\mathrm i\omega\rho_0V\left(x,y\right)\delta\left(z-z_0\right)
+	\end{equation}
+	Modal expansion:
+	\begin{equation}
+	\label{eq:cavityModalExpansion}
+	p\left(x,y,z\right)
+	= \sum_{s=0}^{\infty} P_s\Phi\left(x,y,z\right)
+	\end{equation}
+	Incorporating Eq.~(\ref{eq:cavityModalExpansion}) into Eq.~(\ref{eq:cavityWaveEquation}):
+	\begin{equation}
+	\label{eq:cavityWaveEquExpansion}
+	\nabla^2\sum_{s=0}^{\infty}P_s\Phi\left(x,y,z\right) + 
+		k^2\sum_{s=0}^{\infty}P_s\Phi\left(x,y,z\right)
+	= -2\mathrm i\omega\rho_0V\left(x,y\right)\delta\left(z-z_0\right)
+	\end{equation}
+	Eq.~(\ref{eq:cavityWaveEquExpansion})'s characteristic equation:
+	\begin{equation}
+	\label{eq:WaveEquCharacteristicEqu}
+	\nabla^2P_l\Phi_l\left(x,y,z\right)+k_l^2P_l\Phi_l\left(x,y,z\right)=0
+	\end{equation}
+	Substitute Eq.~(\ref{eq:WaveEquCharacteristicEqu}) into Eq.~(\ref{eq:cavityWaveEquExpansion}):
+	\begin{equation}
+	\label{eq:WaveEquDecouplePrepare}
+	-\sum_{s=0}^{\infty}k_s^2P_s\Phi\left(x,y,z\right) + 
+		k^2\sum_{s=0}^{\infty}P_s\Phi\left(x,y,z\right)
+	= -2\mathrm i\omega\rho_0V\left(x,y\right)\delta\left(z-z_0\right)
+	\end{equation}
+	Using modal orthogonality:
+	\begin{equation}
+	\label{eq:cavityWaveEquDecoupled}
+	\left(k^2-k_l^2\right) P_l
+	\iiint_\Omega\Phi_l^2\left(x,y,z\right)\,\mathrm d\Omega
+	= -2\mathrm i\omega\rho_0 
+		\iiint_\Omega 
+		\Phi_l\left(x,y,z\right) 
+		V\left(x,y\right) 
+		\delta\left( z-z_0\right) \,\mathrm d\Omega
+	\end{equation}
+	where:
+	\begin{equation}
+	\label{eq:cavityPatchVelocity}
+	V\left(x,y\right)
+	= \begin{cases}
+	\langle V\rangle_j\ , &\left( x,y\right) \in S_j\\
+	\ 0\ , &\mathrm{other}
+	\end{cases}
+	\end{equation}
+	then:
+	\begin{equation}
+	\label{eq:cavityVelocityIntegral}
+	\begin{split}
+	\iiint_\Omega\Phi_l\left(x,y,z\right)V\left(x,y\right)
+		\delta\left(z-z_0\right)\,\mathrm d\Omega
+	&= \frac 12\iint_S\Phi_l\left(x,y,z_0\right)V\left(x,y\right)\,\mathrm dS\\
+	&= \frac 12 \langle V\rangle_j \iint_{S_j}\Phi_l\left(x,y,z_0\right)\,\mathrm dS
+	\end{split}
+	\end{equation}
+	Put it into Eq.~(\ref{eq:cavityWaveEquDecoupled}), become:
+	\begin{equation}
+	\label{eq:cavityWaveEquDecoupledSimplify}
+	\left(k^2-k_l^2\right)P_l\iiint_\Omega\Phi_l^2\left(x,y,z\right)\,\mathrm d\Omega
+	= -\mathrm i\omega\rho_0\langle V\rangle_j\iint_{S_j}\Phi_l\left(x,y,z_0\right)\,\mathrm dS
+	\end{equation}
+	We can obtain the modal answer:
+	\begin{equation}
+	\label{eq:cavityPressureModalAns}
+	P_l
+	= -\mathrm i\omega\rho_0\langle V\rangle_j
+		\frac{\iint_{S_j}\Phi_l\left(x,y,z_0\right)\,\mathrm dS}
+		{\left(k^2-k_l^2\right)
+			\iiint_\Omega\Phi_l^2\left(x,y,z\right)\,\mathrm d\Omega}
+	\end{equation}
+	Substitute Eq.~(\ref{eq:cavityPressureModalAns}) into Eq.~(\ref{eq:cavityModalExpansion}):
+	\begin{equation}
+	\label{eq:cavityPressureAns}
+	p\left(x,y,z \right) 
+	= -\mathrm i\omega\rho_0\langle V\rangle_j\sum_{s=0}^{\infty}
+		\frac{\iint_{S_j}\Phi_s\left(x,y,z_0\right)\,\mathrm dS}
+		{\left(k^2-k_l^2\right) \iiint_\Omega\Phi_s^2\left(x,y,z\right)\,\mathrm d\Omega}
+			\Phi_s\left(x,y,z\right)
+	\end{equation}
+	Combine Eq.~(\ref{eq:cavityPressureAns}) and Eq.~(\ref{eq:PatchMeanForce}), we can obtain cavity impedance, which is the reciprocal of mobility:
+	\begin{equation}
+	\label{eq:cavityImpedance}
+	ZC_{ij}
+	= \frac{\langle F\rangle_i}{\langle V\rangle_j}
+	= -\mathrm i\omega\rho_0\sum_{s=0}^{\infty}
+		\frac{\iint_{S_j}\Phi_s\left(x,y,z_0\right)\,\mathrm dS}
+		{\left(k^2-k_l^2\right) 
+			\iiint_\Omega\Phi_s^2\left(x,y,z\right)\,\mathrm d\Omega}
+				\iint_{S_i}\Phi_s\left(x,y,z_1\right)\,\mathrm dS
+	\end{equation}
+	
+	\subsection{Hexahedral Cavity Solution}
+	Cavity Modal:
+	\begin{equation}
+	\label{eq:HexCavityModalExpress}
+	\Psi_s\left(x,y,z\right)
+	= \cos\left(\frac{p\pi}{L_x}x\right)
+	  \cos\left(\frac{q\pi}{L_y}y\right)
+	  \cos\left(\frac{r\pi}{L_z}z\right)
+	\end{equation}
+	where $s=0,1,2,\cdots$. Then:
+	\begin{gather}
+	\label{eq:integralCavityModal}
+	\begin{split}
+	\iint_{S_j}\Phi_s\left(x,y,z_0\right)\,\mathrm dS 
+	&= \iint_{S_j}
+		\cos\left(\frac{p\pi}{L_x}x\right)
+		\cos\left(\frac{q\pi}{L_y}y\right)
+		\cos\left(\frac{r\pi}{L_z}z_0\right)\,\mathrm dS\\
+	&= \cos\left(\frac{r\pi}{L_z}z_0\right)
+	   \int_{S_{jx1}}^{S_{jx2}}\cos\left(\frac{p\pi}{L_x}x\right)\,\mathrm dx
+	   \int_{S_{jy1}}^{S_{jy2}}\cos\left(\frac{q\pi}{L_y}y\right)\,\mathrm dy
+	\end{split}
+	\end{gather}
+	where
+	\begin{gather*}
+	\int_{S_{jx1}}^{S_{jx2}}\cos\left(\frac{p\pi}{L_x}x\right)\,\mathrm dx
+	= \begin{cases}
+	S_{jx2}-S_{jx1}\ ,&p=0\\
+	\frac{L_x}{p\pi}\left[ \sin\left( \frac{p\pi}{L_x} S_{jx2}\right) 
+		-\sin\left( \frac{p\pi}{L_x} S_{jx1}\right)\right]\  ,&p\neq 0
+	\end{cases} \quad,\\
+	\intertext{and}
+	\int_{S_{jy1}}^{S_{jy2}}\cos\left(\frac{q\pi}{L_y}y\right)\,\mathrm dy
+	= \begin{cases}
+	S_{jy2}-S_{jy1}\ ,&q=0\\
+	\frac{L_y}{q\pi}\left[ \sin\left( \frac{q\pi}{L_y} S_{jy2}\right) 
+		-\sin\left( \frac{q\pi}{L_y} S_{jy1}\right)\right]\  ,&q\neq 0
+	\end{cases} \quad.
+	\end{gather*}
+	\begin{equation}
+	\label{eq:integralCavityModalSqua}
+	\begin{split}
+	\iiint_\Omega\Phi_s^2\left(x,y,z\right)\,\mathrm d\Omega
+	&= \iiint_\Omega
+		\cos^2\left(\frac{p\pi}{L_x}x\right)
+		\cos^2\left(\frac{q\pi}{L_y}y\right)
+		\cos^2\left(\frac{r\pi}{L_z}z\right)\,\mathrm d\Omega\\
+	&= \int_0^{L_x}\cos^2\left(\frac{p\pi}{L_x}x\right)\,\mathrm dx
+	   \int_0^{L_y}\cos^2\left(\frac{q\pi}{L_y}y\right)\,\mathrm dy
+	   \int_0^{L_z}\cos^2\left(\frac{r\pi}{L_z}z\right)\,\mathrm dz\\
+	&= L_xL_yL_z\varepsilon_x\varepsilon_y\varepsilon_z
+	\end{split}
+	\end{equation}
+	where
+	\begin{gather*}
+	\varepsilon_x
+	=\begin{cases}
+	1\ ,\quad x=0\\
+	\frac 12\ ,\quad x\neq 0
+	\end{cases},\qquad
+	\varepsilon_y
+	=\begin{cases}
+	1\ ,\quad y=0\\
+	\frac 12\ ,\quad y\neq 0
+	\end{cases}\quad \text{and}\quad\quad
+	\varepsilon_z
+	=\begin{cases}
+	1\ ,\quad z=0\\
+	\frac 12\ ,\quad z\neq 0
+	\end{cases}.
+	\end{gather*}
+	Cavity modal circular frequency:
+	\begin{equation}
+	\label{eq:cavityModalCircularFrequency}
+	\omega_l^2
+	= c^2\left[
+		\left(\frac{p\pi}{L_x}\right)^2 + 
+		\left(\frac{q\pi}{L_y}\right)^2 + 
+		\left(\frac{r\pi}{L_z}\right)^2  \right]
+	\end{equation}
+	Cavity modal wave number:
+	\begin{equation}
+	\label{eq:cavityModalWaveNumber}
+	k_l^2 = \left(\frac{p\pi}{L_x}\right)^2 +
+			\left(\frac{q\pi}{L_y}\right)^2 +
+			\left(\frac{r\pi}{L_z}\right)^2
+	\end{equation}
+	
+	
+	\section{Source Room}
+	
+	\subsection{General Function Solution}
+	Wave equation with point source:
+	\begin{equation}
+	\label{eq:sourceRoomWaveEquation}
+	\nabla^2p^\mathrm{S}\left(x,y,z\right) 
+		+ k^2p^\mathrm{S}\left(x,y,z\right)
+	= -\mathrm i\omega\rho_0 Q\delta\left(x-x_s\right)
+		\delta\left(y-y_s\right)\delta\left(z-z_s\right)
+	\end{equation}
+	Where $\left(x_s,y_s,z_s\right)$ is the point source location and the upper script \textgravedbl S\textacutedbl\ indicate \textgravedbl Source\textacutedbl. Modal expansion:
+	\begin{equation}
+	\label{eq:souceRoomModalExpansion}
+	p^\mathrm{S}\left(x,y,z\right)
+	= \sum_{t=0}^{\infty} P_t^\mathrm{S}\phi_t\left(x,y,z\right)
+	\end{equation}
+	Refer to Eq.~(\ref{eq:cavityPressureModalAns}), we can write pressure modal answer directly:
+	\begin{equation}
+	\label{eq:sourceRoomPressureModalAns}
+	\begin{split}
+	P_t^\mathrm{S}
+	&= \frac{-\mathrm i\omega\rho_0Q \iiint_\Omega
+		\phi_t\left( x,y,z\right)
+		\delta\left(x-x_s\right)
+		\delta\left(y-y_s\right)
+		\delta\left(z-z_s\right)\,\mathrm d\Omega}
+	{\left(k^2-k_t^2 \right) 
+		\iiint_\Omega\phi_t^2\left( x,y,z\right) \,\mathrm d\Omega }\\
+	&= \frac{-\mathrm i\omega\rho_0Q\phi_t\left( x_s,y_s,z_s\right)}
+	{\left(k^2-k_t^2 \right) 
+		\iiint_\Omega\phi_t^2\left( x,y,z\right) \,\mathrm d\Omega }
+	\end{split}
+	\end{equation}
+	
+	Incorporating Eq.~(\ref{eq:sourceRoomPressureModalAns}) into Eq.~(\ref{eq:souceRoomModalExpansion}):
+	\begin{equation}
+	\label{eq:sourceRoomPressureAns}
+	p^\mathrm{S}\left(x,y,z\right)
+	= -\mathrm i\omega\rho_0Q\sum_{t=0}^{\infty}
+		\frac{\phi_t\left( x_s,y_s,z_s\right)}
+		{\left(k^2-k_t^2 \right) 
+			\iiint_\Omega \phi_t^2\left( x,y,z\right) \,\mathrm d\Omega }
+		\phi_t\left( x,y,z\right)
+	\end{equation}
+	For hexahedral room:
+	\begin{equation}
+	\label{eq:hexahedralSourceRoom}
+	\phi_t\left(x,y,z\right)
+	= \cos\left(\frac{p\pi}{L_x}x\right)
+	\cos\left(\frac{q\pi}{L_y}y\right)
+	\cos\left(\frac{r\pi}{L_z}z\right)
+	\end{equation}
+	then
+	\begin{equation}
+	\label{eq:SourceRoomNj}
+	\begin{split}
+	\iiint_\Omega \phi_t^2\left( x,y,z\right) \,\mathrm d\Omega 
+	=& 	\int_0^{L_x} \cos^2 \left(\frac{p\pi}{L_x}x\right) \,\mathrm dx
+		\int_0^{L_y} \cos^2 \left(\frac{q\pi}{L_y}y\right) \,\mathrm dy
+		\int_0^{L_z} \cos^2 \left(\frac{r\pi}{L_z}z\right) \,\mathrm dz\\
+	=& \varepsilon_p\varepsilon_q\varepsilon_r L_x L_y L_z
+	\end{split}
+	\end{equation}
+	where
+	\begin{gather*}
+	\varepsilon_p = \begin{cases}
+	1\ ,\quad p=0\\
+	\frac 12\ ,\quad p\neq 0
+	\end{cases},\qquad
+	\varepsilon_q = \begin{cases}
+	1\ ,\quad q=0\\
+	\frac 12\ ,\quad q\neq 0
+	\end{cases}\quad \text{and}\quad\quad
+	\varepsilon_r = \begin{cases}
+	1\ ,\quad r=0\\
+	\frac 12\ ,\quad r\neq 0
+	\end{cases}.
+	\end{gather*}
+	
+	Incorporating Eq.~(\ref{eq:SourceRoomNj}) into Eq.~(\ref{eq:sourceRoomPressureModalAns}) and Eq.~(\ref{eq:sourceRoomPressureAns}):
+	\begin{equation}
+	\label{eq:sourceRoomPressureModalAnsSim}
+	P_t^\mathrm{S}
+	= \frac{-\mathrm i\omega\rho_0Q\phi_t\left( x_s,y_s,z_s\right)}
+	{\left(k^2-k_t^2 \right) 
+		\varepsilon_p\varepsilon_q\varepsilon_r L_x L_y L_z }
+	\end{equation}
+	\begin{equation}
+	\label{eq:sourceRoomPressureAnsSim}
+	p^\mathrm{S}\left(x,y,z\right)
+	= -\mathrm i\omega\rho_0Q\sum_{t=0}^{\infty}
+	\frac{\phi_t\left( x_s,y_s,z_s\right)}
+	{\left(k^2-k_t^2 \right) 
+		\varepsilon_p\varepsilon_q\varepsilon_r L_x L_y L_z }
+	\phi_t\left( x,y,z\right)
+	\end{equation}
+	
+	
+	\subsection{Quadratic Room Pressure}
+	Quadratic room pressure:
+	\begin{equation}
+	\label{eq:QuadraticRoomPressure}
+	\begin{split}
+	P_r^2
+	&= \frac{\iiint_\Omega
+		\left[p^\mathrm{S}\left(x,y,z\right)\right]^2
+		\,\mathrm d\Omega }
+	{L_xL_yL_z}\\
+	&= \frac{\iiint_\Omega
+		\left[\sum_{t=0}^{\infty}P_t^\mathrm{S}\phi_t\left(x,y,z\right)\right]^2
+		\,\mathrm d\Omega }
+	{L_xL_yL_z}\\
+	&= \frac{\sum_{t=0}^{\infty}\left\lvert P_t^\mathrm{S}\right\rvert^2
+		\iiint_\Omega\phi_t^2\left(x,y,z\right)\,\mathrm d\Omega }
+	{L_xL_yL_z}\\
+	&= \sum_{t=0}^{\infty}\left\lvert P_t^\mathrm{S}
+		\right\rvert^2\varepsilon_p\varepsilon_q\varepsilon_r\\
+	 &= \sum_{t=0}^{\infty} 
+	 \frac{ \omega^2 \rho_0^2 Q^2 \phi_t^2 \left( x_s,y_s,z_s\right)}
+	 {\left(k^2-k_t^2 \right)^2 
+	 	\varepsilon_p\varepsilon_q\varepsilon_r L_x^2 L_y^2 L_z^2 }
+	\end{split}
+	\end{equation}
+	
+	\subsection{Blocked Patch Pressure}
+	Blocked patch pressure:
+	\begin{equation}
+	\label{eq:BlockPatchPressure}
+	\begin{split}
+	\langle P\rangle_i
+	&= \frac{1}{S_i}\iint_{S_i}p^\mathrm{S}\left(x,y_w,z\right)\,\mathrm dS_i\\
+	&= \frac{1}{S_i}\iint_{S_i}
+		\left[\sum_{t=0}^{\infty}P_t^\mathrm{S}\phi_t\left(x,y_w,z\right)\right]
+		\,\mathrm dS_i\\
+	&= \frac{1}{S_i}\sum_{t=0}^{\infty}
+		\left[P_t^\mathrm{S}\iint_{S_i}\phi_t\left(x,y_w,z\right)
+		\,\mathrm dS_i\right]\\
+	&= \frac{1}{S_i}\sum_{t=0}^{\infty}
+		\left[ P_t^\mathrm{S} \cos\left(\frac{q\pi}{L_y}y_w\right)
+		\int_{\text{patch}x1}^{\text{patch}x2}
+			\cos\left(\frac{p\pi}{L_x}x\right)\,\mathrm dx
+		\int_{\text{patch}z1}^{\text{patch}z2}
+			\cos\left(\frac{r\pi}{L_z}z\right)\,\mathrm dz \right]
+	\end{split}
+	\end{equation}
+	where
+	\begin{gather*}
+	\int_{\text{patch.}x1}^{\text{patch.}x2}
+		\cos\left(\frac{p\pi}{L_x}x\right)\,\mathrm dx=
+	\begin{dcases}
+	\left.\frac{L_x}{p\pi}\sin\left(\frac{p\pi}{L_x}x\right)
+		\right\rvert_{\text{patch.}x1}^{\text{patch.}x2}\ ,\quad &p\neq 0\\
+	\text{patch.}x2-\text{patch.}x1\ ,\quad &p=0
+	\end{dcases}
+	\intertext{and}
+	\int_{\text{patch.}z1}^{\text{patch.}z2}
+		\cos\left(\frac{r\pi}{L_z}z\right)\,\mathrm dz=
+	\begin{dcases}
+	\left.\frac{L_z}{r\pi}\sin\left(\frac{r\pi}{L_z}z\right)
+		\right\rvert_{\text{patch.}z1}^{\text{patch.}z2}\ ,\quad &r\neq 0\\
+	\text{patch.}z2-\text{patch.}z1\ ,\quad &r=0
+	\end{dcases}
+	\end{gather*}
+	
+	
+	\section{Semi-Infinite Medium}
+	
+	\subsection{Radiated Pressure and Impedance}
+	Radiation impedance is defined as the ratio of averaged patch $i$ radiated pressure to averaged patch $j$ velocity:
+	\begin{equation}
+	\label{eq:RadiatedImpedanceDefinition}
+	\langle Z\rangle_{ij} 
+	= \frac{\langle P_{\text{rad}}\rangle_{i}}{\langle V\rangle_{j}}
+	\end{equation}
+	
+	Rayleigh's formula [David Feit. Sound, Structures, and Their Interaction: p89, Eq.~(4.29)]:
+	\begin{equation}
+	\label{eq:RayleighIntegral}
+	p\left(\bm{R}\right)
+	= \frac{\rho_0}{2\pi R}
+		\int_{S_0} \exp\left(\mathrm jk\left\lvert\bm{R-R}_0\right\rvert \right)
+		\ddot{w}\left(\bm{R}_0\right) \,\mathrm{d}S\left(\bm{R}_0\right)
+			\quad,\qquad\bm{R}\gg\bm{R}_0
+	\end{equation}
+	
+	Where the vibrating surface is planar and infinitely extend, the Rayleigh integral applies:
+	\begin{equation}
+	\label{eq:RayleighIntegral1}
+	\tilde{p} \left( \bm{\mathrm{r}} \right) e^{\mathrm j\omega t} 
+		= \frac{\mathrm j\omega\rho_0}{4\pi} e^{\mathrm j\omega t}
+			\int_S \left[ 2\tilde{v}_n\left( \bm{\mathrm{r}}_s\right)
+				\frac{e^{-\mathrm jkR}}{R} \right] \,\mathrm{d}S
+	\end{equation}
+	then, consider the patch as a rigid circular disc of radius $a$ vibrating in a coplanar rigid baffle. The pressure at the centre due to the motion of an annulus of radius $R$ is given by Eq.~(\ref{eq:RayleighIntegral1}) as (Fahy P247):
+	\begin{equation}
+	\label{eq:deltaP}
+	\delta \tilde {p}\left(0\right)
+		=\frac{\mathrm j\omega\rho_0}{4\pi R} 
+			2\tilde{v}_n e^{-\mathrm jkR} 2\pi R \delta R
+		= \mathrm j \omega \rho_0 \tilde{v}_n e^{-\mathrm jkR} \delta R
+	\end{equation}
+	The total pressure at the centre is given by the integral over the limits 0 to $a$:
+	\begin{equation}
+	\label{eq:RadiatedImpPslef}
+	\tilde{p}\left(0\right) 
+		= \mathrm j \omega \rho \tilde{v}_n \int_{0}^{a} e^{-\mathrm jkR} \,\mathrm{d}R
+		= \rho_0 c \tilde{v}_n \left( 1-e^{-\mathrm jka} \right)
+	\end{equation}
+	the patch impedance:
+	\begin{eqnarray}
+	\label{eq:RaditedImpZself}
+	\langle\langle Z \rangle_i \rangle_i 
+		 = \frac{\langle P_{\text{rad}} \rangle_i}{\langle V \rangle_i}
+		 = \frac{\tilde{p}\left(0\right)}{\tilde{v}_n}
+		 = \rho_0 c \left( 1-e^{-\mathrm jka} \right)
+	\end{eqnarray}
+	
+	Consider the patch $j$, if the patch dimensions are small, the integral can be approximated by the value at the central point times the patch area. The pressure at patch $j$ can be write from Eq.~(\ref{eq:RayleighIntegral1}):
+	\begin{equation}
+	\label{eq:patch_j_pressure}
+	\tilde{p}\left( d_{ij} \right)
+	= \frac{\mathrm j\omega\rho_0}{4\pi} 2\tilde{v}_n 
+		\frac{e^{\mathrm jkd_{ij}}}{d_{ij}} S_{j}
+	\end{equation}
+	the patch impedance:
+	\begin{eqnarray}
+	\label{eq:RaditedImpZdiff}
+	\langle\langle Z \rangle_i \rangle_j 
+	= \frac{\langle P_{\text{rad}} \rangle_j}{\langle V \rangle_i}
+	= \frac{\tilde{p}\left( d_{ij} \right)}{\tilde{v}_n}
+	= \mathrm j\omega\rho_0 \frac{e^{-\mathrm jkd_{ij}}}{2\pi d_{ij}} S_j
+	\end{eqnarray}
+	
+	Radiation patch mobilities are obtained by inversion of impedance matrix calculated from previous Eq.~(\ref{eq:RaditedImpZself}) and Eq.~(\ref{eq:RaditedImpZdiff}).
+	
+	
+	\subsection{Radiated Power}
+	
+	Radiated power is calculated from patch velocities and radiated patch pressures, and can be written using radiation patch mobility method (Fahy P124):
+	\begin{equation}
+	\label{eq:radiated_Power}
+	I_{\text{rad}} 
+		= \frac 12 \sum_i \mathrm{Re}\{\langle V \rangle_i^\ast 
+			\langle P_{\text{rad}} \rangle_i \}
+		= \frac 12 \left( \left[ Y_{\text{rad}} \right]^{-1} \{V\} \right)' \{V\}^\ast
+		= \frac 12 \{V\}' \left[ Z_{\text{rad}} \right] \{V\}^\ast
+	\end{equation}
+\end{document}
+

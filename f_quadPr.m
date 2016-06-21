@@ -1,0 +1,84 @@
+function [ Pr_squa ] = f_quadPr( lx,ly,lz, Xs,Ys,Zs,S_0, c,freq,rho_a,Nmodal,np,nq,nr )
+% Quadratic room pressure. size: 1*freqNUM
+% Use to prediction of the transmission loss
+% the paper function (42)
+% 
+% see: test_quadPr.m  
+disp('Calculating Quadratic Room Pressure')
+% c = 343.6;  % m/s
+% S_0 = 2; % Source amplitude
+%
+%
+% lx = 11.5;ly = 8.69;lz = 4.03; % Cavity size
+% Xs = 2;Ys = 4;Zs = 1; % Source location
+% pi_lx=pi/lx;pi_ly=pi/ly;pi_lz=pi/lz;
+%
+
+% freq = 50:0.5:1000 ; 
+% freqNUM = length( freq );
+
+
+
+%--------------------------------------------------------------------------------------------------------
+% fprintf('step %3d/3  Modal Frequency\n',1)
+% 
+% % np = 350;
+% % nq = 250;
+% % nr = 150;
+% % Nmodal = 100000 ;
+% % [omegasqua,idx_c] = f_cavityfreqsqua(lx,ly,lz,c,Nmodal,np,nq,nr);
+% [kpqr_squa,idx_c] = f_cavityksqua(lx,ly,lz,Nmodal,np,nq,nr);
+% 
+% fprintf('step %3d/3  Apqr\n',2)
+% 
+% % intphis = repmat(cos(idx_c.x*pi*Xs/lx).*cos(idx_c.y*pi*Ys/ly).*cos(idx_c.z*pi*Zs/lz),1,freqNUM);
+% intphis = S_0 * cos(idx_c.x*pi*Xs/lx).*cos(idx_c.y*pi*Ys/ly).*cos(idx_c.z*pi*Zs/lz);
+% 
+% lxcomp(1:Nmodal,1) = lx;
+% lxcomp(idx_c.x~=0) = 0.5*lx;
+% lycomp(1:Nmodal,1) = ly;
+% lycomp(idx_c.y~=0) = 0.5*ly;
+% lzcomp(1:Nmodal,1) = lz;
+% lzcomp(idx_c.z~=0) = 0.5*lz;
+% % Npqr = repmat(lxcomp.*lycomp.*lzcomp,1,freqNUM);
+% Npqr = lxcomp.*lycomp.*lzcomp;
+% 
+% % k_pqr_squa = repmat(omegasqua/c^2,1,freqNUM);
+% % k_pqr_squa = omegasqua/c^2;
+% 
+% T_r = 10;
+% eta_r = 2.2./(freq*T_r);
+% cc = c* sqrt(1 + 1i*eta_r);
+% % kc_squa = repmat( (2*pi*freq./cc).^2, Nmodal,1);
+% kc_squa = (2*pi*freq./cc).^2;
+% 
+% % fun = @(A,B) A./B;
+% % A_pqr   size: Nmodal*freqNUM
+% % A_pqr = bsxfun( @rdivide,intphis./Npqr,(bsxfun(@minus,kc_squa,kpqr_squa)) );
+% omega = 2*pi*freq;
+% A_pqr = bsxfun(@times,-omega.^2*rho_a,intphis./Npqr)./bsxfun(@minus,kc_squa,kpqr_squa) ;
+%-------------------------------------------------------------------------------------------------
+
+fprintf('    step %3d/2  Apqr\n',1)
+[A_pqr,idx_c] = f_Apqr( lx,ly,lz, Xs,Ys,Zs,S_0, c,freq,rho_a,Nmodal,np,nq,nr );
+
+
+fprintf('    step %3d/2  Pr^2\n',2)
+
+epsnp = ones(1,Nmodal);
+epsnq = ones(1,Nmodal);
+epsnr = ones(1,Nmodal);
+% epsnp(idx_c.x~=0) = 2;
+% epsnq(idx_c.y~=0) = 2;
+% epsnr(idx_c.z~=0) = 2;
+epsnp(idx_c.x==0) = 2;
+epsnq(idx_c.y==0) = 2;
+epsnr(idx_c.z==0) = 2;
+
+% size: 1*freqNUM
+Pr_squa = (epsnp.*epsnq.*epsnr) * abs((A_pqr).^2) ./8;
+
+disp('Complete')
+
+end
+
